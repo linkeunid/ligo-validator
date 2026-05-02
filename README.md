@@ -1,10 +1,10 @@
 # ligo-validator
 
-A DI-ready wrapper for [go-playground/validator](https://github.com/go-playground/validator) for [Ligo](https://github.com/linkeunid/ligo) — registers a singleton `*validator.Validate` in the DI container.
+A DI-ready wrapper for [go-playground/validator](https://github.com/go-playground/validator) for [Ligo](https://github.com/linkeunid/ligo), with class-validator style built-in helpers.
 
 [![Go Version](https://img.shields.io/badge/go-1.21+-blue)](https://go.dev/dl)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-7%20passing-brightgreen)](https://github.com/linkeunid/ligo-validator)
+[![Tests](https://img.shields.io/badge/tests-38%20passing-brightgreen)](https://github.com/linkeunid/ligo-validator)
 
 ## Install
 
@@ -14,7 +14,7 @@ go get github.com/linkeunid/ligo-validator
 
 ## Quick start
 
-Register the validator provider in your module and inject it into your use cases:
+Register the provider in your module and inject `*validator.Validate` into your constructors:
 
 ```go
 import (
@@ -27,30 +27,26 @@ func UserModule() ligo.Module {
     return ligo.NewModule("user",
         ligo.Providers(
             ligovalidator.Provider(),
-            ligo.Factory[repository.UserRepository](memory.NewUserRepository),
             ligo.Factory[*usecase.UserUseCase](usecase.NewUserUseCase),
         ),
-        ligo.Controllers(controller.NewUserController),
     )
 }
 
-func NewUserUseCase(repo repository.UserRepository, log ligo.Logger, verify *validator.Validate) *UserUseCase {
-    return &UserUseCase{repo: repo, log: log, verify: verify}
+func NewUserUseCase(repo repository.UserRepository, verify *validator.Validate) *UserUseCase {
+    return &UserUseCase{repo: repo, verify: verify}
 }
 ```
 
-For a zero-config drop-in, use `ligovalidator.Module()` which registers a shared `*validator.Validate`:
+For a zero-config drop-in:
 
 ```go
 app.Register(ligovalidator.Module(), myModule())
 ```
 
-## Why
+## See also
 
-Without this package, every use case calls `validator.New()` itself — creating multiple instances with no shared configuration. `ligo-validator` gives you a single singleton, registered once, injectable anywhere.
-
-| Before | After |
-|--------|-------|
-| `validator.New()` in every use case | Single singleton, registered once |
-| Custom validators scattered | Registered in one place in `Provider()` |
-| Hard to replace in tests | Inject a pre-configured instance |
+- [DI integration & custom tags](docs/features/module.md)
+- [String helpers](docs/features/str.md)
+- [Slice helpers](docs/features/slice.md)
+- [Number helpers](docs/features/num.md)
+- [Object helpers](docs/features/obj.md)

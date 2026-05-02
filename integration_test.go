@@ -80,3 +80,50 @@ func TestProviderInjectsValidate(t *testing.T) {
 		}
 	}
 }
+
+// TestProviderIntegratesCustomTags verifies that Provider() registers a
+// *validator.Validate with custom tags (not_blank, arr_not_empty, not_empty_obj)
+// available in struct validation.
+func TestProviderIntegratesCustomTags(t *testing.T) {
+	type profile struct {
+		Name string         `validate:"not_blank"`
+		Tags []string       `validate:"arr_not_empty"`
+		Meta map[string]any `validate:"not_empty_obj"`
+	}
+
+	var injected *validator.Validate
+
+	mod := ligo.NewModule("test-defaults",
+		ligo.Providers(
+			ligovalidator.Provider(),
+			ligo.Factory[*profile](func(v *validator.Validate) *profile {
+				injected = v
+				return &profile{}
+			}),
+		),
+	)
+	startApp(t, mod)
+
+	if injected == nil {
+		t.Skip("factory was not resolved by DI")
+	}
+
+	valid := &profile{
+		Name: "Alice",
+		Tags: []string{"go"},
+		Meta: map[string]any{"env": "prod"},
+	}
+	if err := injected.Struct(valid); err != nil {
+		t.Fatalf("expected valid struct, got: %v", err)
+	}
+
+	if err := injected.Struct(&profile{Name: "  ", Tags: []string{"go"}, Meta: map[string]any{"k": "v"}}); err == nil {
+		t.Fatal("expected not_blank to reject whitespace-only Name")
+	}
+	if err := injected.Struct(&profile{Name: "Alice", Tags: []string{}, Meta: map[string]any{"k": "v"}}); err == nil {
+		t.Fatal("expected arr_not_empty to reject empty Tags")
+	}
+	if err := injected.Struct(&profile{Name: "Alice", Tags: []string{"go"}, Meta: map[string]any{}}); err == nil {
+		t.Fatal("expected not_empty_obj to reject empty Meta")
+	}
+}

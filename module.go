@@ -1,5 +1,6 @@
 // Package ligovalidator provides a DI-ready wrapper for go-playground/validator,
 // registering a singleton *validator.Validate in the Ligo DI container.
+// The singleton is pre-configured with built-in custom tags via [RegisterAll].
 package ligovalidator
 
 import (
@@ -7,8 +8,32 @@ import (
 	"github.com/linkeunid/ligo"
 )
 
+// RegisterAll registers all built-in ligo-validator custom struct tags on v.
+//
+// Custom tags:
+//   - "not_blank"      — string must contain at least one non-whitespace character
+//   - "arr_not_empty"  — slice or array must have at least one element
+//   - "not_empty_obj"  — struct or map must have at least one non-zero field/entry
+func RegisterAll(v *validator.Validate) {
+	if err := v.RegisterValidation("not_blank", func(fl validator.FieldLevel) bool {
+		return IsNotBlank(fl.Field().String())
+	}); err != nil {
+		panic(err)
+	}
+	if err := v.RegisterValidation("arr_not_empty", func(fl validator.FieldLevel) bool {
+		return fl.Field().Len() > 0
+	}); err != nil {
+		panic(err)
+	}
+	if err := v.RegisterValidation("not_empty_obj", func(fl validator.FieldLevel) bool {
+		return IsNotEmptyObject(fl.Field().Interface())
+	}); err != nil {
+		panic(err)
+	}
+}
+
 // Provider returns a [ligo.Provider] that registers a *[validator.Validate]
-// as a singleton in the DI container.
+// singleton in the DI container with all built-in custom tags pre-registered.
 //
 // Use inside your module's [ligo.Providers] list:
 //
@@ -30,16 +55,15 @@ import (
 //	}
 func Provider() ligo.Provider {
 	return ligo.Factory[*validator.Validate](func() *validator.Validate {
-		return validator.New()
+		v := validator.New()
+		RegisterAll(v)
+		return v
 	})
 }
 
 // Module returns a Ligo module that registers a *[validator.Validate] singleton
-// via DI. It is a convenient zero-config drop-in for applications that want a
-// single shared validator instance without declaring it inside their own modules.
-//
-// For custom validator configuration (registering tag names, custom rules, etc.),
-// use [Provider] directly inside your own module and wrap the factory.
+// via DI with all built-in custom tags pre-registered. It is a convenient
+// zero-config drop-in.
 //
 //	app.Register(ligovalidator.Module(), myModule())
 func Module() ligo.Module {
