@@ -70,3 +70,31 @@ func TestSliceUnique(t *testing.T) {
 		t.Fatal("expected true for single-element slice")
 	}
 }
+
+func TestSliceAll(t *testing.T) {
+	pos := func(n int) bool { return n > 0 }
+
+	if !SliceAll([]int{1, 2, 3}, pos) {
+		t.Fatal("expected true when all elements satisfy predicate")
+	}
+	if SliceAll([]int{1, -1, 3}, pos) {
+		t.Fatal("expected false when one element fails predicate")
+	}
+	if !SliceAll([]int{}, pos) {
+		t.Fatal("expected true for empty slice")
+	}
+}
+
+func TestSliceAny(t *testing.T) {
+	pos := func(n int) bool { return n > 0 }
+
+	if !SliceAny([]int{-1, 0, 1}, pos) {
+		t.Fatal("expected true when at least one element satisfies predicate")
+	}
+	if SliceAny([]int{-1, -2, -3}, pos) {
+		t.Fatal("expected false when no element satisfies predicate")
+	}
+	if SliceAny([]int{}, pos) {
+		t.Fatal("expected false for empty slice")
+	}
+}

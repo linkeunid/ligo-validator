@@ -71,6 +71,34 @@ ligovalidator.SliceNotContains([]int{1, 2, 3}, 9) // true
 ligovalidator.SliceNotContains([]int{1, 2, 3}, 2) // false
 ```
 
+### SliceAll
+
+```go
+func SliceAll[T any](s []T, fn func(T) bool) bool
+```
+
+Reports whether `fn` returns true for every element in `s`. Returns true for an empty slice.
+
+```go
+ligovalidator.SliceAll([]int{1, 2, 3}, func(n int) bool { return n > 0 }) // true
+ligovalidator.SliceAll([]int{1, -1, 3}, func(n int) bool { return n > 0 }) // false
+ligovalidator.SliceAll([]int{}, func(n int) bool { return n > 0 })          // true
+```
+
+### SliceAny
+
+```go
+func SliceAny[T any](s []T, fn func(T) bool) bool
+```
+
+Reports whether `fn` returns true for at least one element in `s`. Returns false for an empty slice.
+
+```go
+ligovalidator.SliceAny([]int{-1, 0, 1}, func(n int) bool { return n > 0 }) // true
+ligovalidator.SliceAny([]int{-1, -2}, func(n int) bool { return n > 0 })    // false
+ligovalidator.SliceAny([]int{}, func(n int) bool { return n > 0 })           // false
+```
+
 ### SliceUnique
 
 ```go

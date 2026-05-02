@@ -111,3 +111,17 @@ Reports whether `s` does not contain `substr`.
 ligovalidator.StrNotContains("hello", "xyz")         // true
 ligovalidator.StrNotContains("hello world", "world") // false
 ```
+
+### StrOneOf
+
+```go
+func StrOneOf(s string, values ...string) bool
+```
+
+Reports whether `s` equals one of the given values. Useful for enum-like validation.
+
+```go
+ligovalidator.StrOneOf("admin", "admin", "user", "viewer") // true
+ligovalidator.StrOneOf("root",  "admin", "user", "viewer") // false
+ligovalidator.StrOneOf("admin")                            // false — no values to match
+```

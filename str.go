@@ -1,6 +1,9 @@
 package ligovalidator
 
-import "strings"
+import (
+	"slices"
+	"strings"
+)
 
 // IsEmpty reports whether s has zero length.
 func IsEmpty(s string) bool { return s == "" }
@@ -25,3 +28,7 @@ func StrContains(s, substr string) bool { return strings.Contains(s, substr) }
 
 // StrNotContains reports whether s does not contain substr.
 func StrNotContains(s, substr string) bool { return !strings.Contains(s, substr) }
+
+// StrOneOf reports whether s is equal to one of the given values.
+// Returns false if no values are provided.
+func StrOneOf(s string, values ...string) bool { return slices.Contains(values, s) }

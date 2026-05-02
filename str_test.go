@@ -100,3 +100,18 @@ func TestStrNotContains(t *testing.T) {
 		t.Fatal("expected true when substr is absent")
 	}
 }
+
+func TestStrOneOf(t *testing.T) {
+	if !StrOneOf("admin", "admin", "user", "viewer") {
+		t.Fatal("expected true for matching value")
+	}
+	if !StrOneOf("viewer", "admin", "user", "viewer") {
+		t.Fatal("expected true for last value")
+	}
+	if StrOneOf("root", "admin", "user", "viewer") {
+		t.Fatal("expected false for non-matching value")
+	}
+	if StrOneOf("admin") {
+		t.Fatal("expected false when no values provided")
+	}
+}

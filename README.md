@@ -4,7 +4,7 @@ A DI-ready wrapper for [go-playground/validator](https://github.com/go-playgroun
 
 [![Go Version](https://img.shields.io/badge/go-1.21+-blue)](https://go.dev/dl)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-38%20passing-brightgreen)](https://github.com/linkeunid/ligo-validator)
+[![Tests](https://img.shields.io/badge/tests-54%20passing-brightgreen)](https://github.com/linkeunid/ligo-validator)
 
 ## Install
 
@@ -50,3 +50,7 @@ app.Register(ligovalidator.Module(), myModule())
 - [Slice helpers](docs/features/slice.md)
 - [Number helpers](docs/features/num.md)
 - [Object helpers](docs/features/obj.md)
+- [Pointer helpers](docs/features/ptr.md)
+- [Map helpers](docs/features/map.md)
+- [Format validators](docs/features/format.md)
+- [Zero helpers](docs/features/zero.md)
