@@ -4,7 +4,7 @@ go 1.25.9
 
 require (
 	github.com/go-playground/validator/v10 v10.30.2
-	github.com/linkeunid/ligo v0.0.0-00010101000000-000000000000
+	github.com/linkeunid/ligo v0.1.0
 )
 
 require (
@@ -17,5 +17,3 @@ require (
 	golang.org/x/sys v0.42.0 // indirect
 	golang.org/x/text v0.35.0 // indirect
 )
-
-replace github.com/linkeunid/ligo => /home/haniv/Development/work/linkeunid/dev/fw/ligo
