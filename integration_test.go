@@ -6,10 +6,10 @@ import (
 	"time"
 
 	"github.com/go-playground/validator/v10"
-
 	"github.com/linkeunid/ligo"
-	ligovalidator "github.com/linkeunid/ligo-validator"
 	"github.com/linkeunid/ligo/adapters/echo"
+
+	ligovalidator "github.com/linkeunid/ligo-validator"
 )
 
 func startApp(t *testing.T, modules ...ligo.Module) *ligo.App {
