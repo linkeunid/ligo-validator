@@ -6,9 +6,10 @@ import (
 	"time"
 
 	"github.com/go-playground/validator/v10"
+
 	"github.com/linkeunid/ligo"
-	"github.com/linkeunid/ligo/adapters/echo"
 	ligovalidator "github.com/linkeunid/ligo-validator"
+	"github.com/linkeunid/ligo/adapters/echo"
 )
 
 func startApp(t *testing.T, modules ...ligo.Module) *ligo.App {
@@ -52,7 +53,8 @@ func TestProviderInjectsValidate(t *testing.T) {
 
 	var injected *validator.Validate
 
-	mod := ligo.NewModule("test",
+	mod := ligo.NewModule(
+		"test",
 		ligo.Providers(
 			ligovalidator.Provider(),
 			ligo.Factory[*payload](func(v *validator.Validate) *payload {
@@ -93,7 +95,8 @@ func TestProviderIntegratesCustomTags(t *testing.T) {
 
 	var injected *validator.Validate
 
-	mod := ligo.NewModule("test-defaults",
+	mod := ligo.NewModule(
+		"test-defaults",
 		ligo.Providers(
 			ligovalidator.Provider(),
 			ligo.Factory[*profile](func(v *validator.Validate) *profile {

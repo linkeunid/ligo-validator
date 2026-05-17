@@ -5,6 +5,7 @@ package ligovalidator
 
 import (
 	"github.com/go-playground/validator/v10"
+
 	"github.com/linkeunid/ligo"
 )
 
@@ -67,7 +68,8 @@ func Provider() ligo.Provider {
 //
 //	app.Register(ligovalidator.Module(), myModule())
 func Module() ligo.Module {
-	return ligo.NewModule("ligo-validator",
+	return ligo.NewModule(
+		"ligo-validator",
 		ligo.Providers(
 			Provider(),
 		),
